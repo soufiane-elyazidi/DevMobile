@@ -18,6 +18,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/task_title"/>
+
+    <ImageButton
+        android:id="@+id/edit_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_edit_24"
+        app:layout_constraintTop_toTopOf="@id/task_title"
+        app:layout_constraintBottom_toBottomOf="@id/task_description"
+        app:layout_constraintRight_toLeftOf="@id/delete_task"
+        android:contentDescription="@string/delete_task" />
     
     <ImageButton
         android:id="@+id/delete_task"

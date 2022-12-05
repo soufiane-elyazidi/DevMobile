@@ -7,49 +7,91 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.recyclerview.widget.RecyclerView
-import fr.ensiie.todo.R
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import fr.ensiie.todo.data.Api
 import fr.ensiie.todo.databinding.FragmentTaskListBinding
 import fr.ensiie.todo.detail.DetailActivity
-import java.util.*
+import kotlinx.coroutines.launch
 
 class TaskListFragment : Fragment() {
     private lateinit var binding: FragmentTaskListBinding
 
-    private val adapter = TaskListAdapter()
+    private val adapterListener : TaskListListener = object : TaskListListener {
 
-    private var taskList = listOf(
-        Task(id = "id_1", title = "Task 1", description = "Description 1"),
-        Task(id = "id_2", title = "Task 2"),
-        Task(id = "id_3", title = "Task 3")
-    )
+        override fun onClickDelete(task: Task) {
+            viewModel.delete(task)
+        }
+
+        override fun onClickEdit(task: Task) {
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("task", task)
+            editTask.launch(intent)
+        }
+
+        override fun onLongClick(task: Task) {
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, task.description)
+                type = "text/plain"
+            }
+            startActivity(Intent.createChooser(shareIntent, null))
+        }
+    }
+
+    private val adapter = TaskListAdapter(adapterListener)
+
+    private val editTask =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result ->
+            val task = result.data?.getSerializableExtra("task") as Task? ?: return@registerForActivityResult
+            viewModel.update(task)
+        }
 
     private val createTask =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 result ->
             val task = result.data?.getSerializableExtra("task") as Task? ?: return@registerForActivityResult
-            taskList = taskList + task
-            adapter.submitList(taskList)
+            viewModel.create(task)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private val viewModel: TasksListViewModel by viewModels()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTaskListBinding.inflate(inflater, container, false)
-        adapter.submitList(taskList)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.recycler.adapter = adapter
 
         binding.addBtn.setOnClickListener {
-            createTask.launch(Intent(context, DetailActivity::class.java))
+            val intent = Intent(context, DetailActivity::class.java)
+            createTask.launch(intent)
         }
 
-        adapter.onClickDelete = { task ->
-            taskList = taskList - task
-            adapter.submitList(taskList)
+        lifecycleScope.launch {
+            fetchUser()
         }
+
+        lifecycleScope.launch {
+            viewModel.tasksStateFlow.collect { newList ->
+                adapter.submitList(newList)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.refresh()
+    }
+
+    private suspend fun fetchUser() {
+        val user = Api.userWebService.fetchUser().body()!!
+        binding.userTextView.text = user.name
     }
 
 }

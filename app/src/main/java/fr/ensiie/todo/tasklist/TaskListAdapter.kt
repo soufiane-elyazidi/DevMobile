@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import fr.ensiie.todo.R
 
-class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(ItemsDiffCallback) {
+class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(ItemsDiffCallback) {
 
     object ItemsDiffCallback : DiffUtil.ItemCallback<Task>() {
         override fun areItemsTheSame(oldItem: Task, newItem: Task) : Boolean {
@@ -19,6 +19,8 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(ItemsD
 
         override fun areContentsTheSame(oldItem: Task, newItem: Task) : Boolean {
             return areItemsTheSame(oldItem, newItem)
+                    && oldItem.title == newItem.title
+                    && oldItem.description == newItem.description
         }
     }
 
@@ -32,14 +34,17 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(ItemsD
         holder.bind(currentList[position])
     }
 
-    var onClickDelete: (Task) -> Unit = {}
-
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(task: Task) {
+            itemView.setOnLongClickListener {
+                listener.onLongClick(task)
+                true
+            }
             itemView.findViewById<TextView>(R.id.task_title).text = task.title
             itemView.findViewById<TextView>(R.id.task_description).text = task.description
-            itemView.findViewById<ImageButton>(R.id.delete_task).setOnClickListener { onClickDelete(task) }
+            itemView.findViewById<ImageButton>(R.id.delete_task).setOnClickListener { listener.onClickDelete(task) }
+            itemView.findViewById<ImageButton>(R.id.edit_task).setOnClickListener { listener.onClickEdit(task) }
         }
 
     }
