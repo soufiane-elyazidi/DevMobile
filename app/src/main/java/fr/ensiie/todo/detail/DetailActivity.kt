@@ -58,8 +58,7 @@ class DetailActivity : ComponentActivity() {
 
 @Composable
 fun Detail(task: Task, onValidate: (Task) -> Unit) {
-    var newTask by remember { mutableStateOf(task)
-    }
+    var newTask by remember { mutableStateOf(task) }
     Column(
         modifier = Modifier.padding(all = Dp(16F)),
         verticalArrangement = Arrangement.spacedBy(Dp(16F))

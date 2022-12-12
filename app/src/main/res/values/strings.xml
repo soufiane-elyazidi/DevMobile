@@ -17,4 +17,6 @@
     <string name="description_text">Description</string>
     <string name="save">SAVE</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="avatar">avatar</string>
+    <string name="title_activity_user">UserActivity</string>
 </resources>

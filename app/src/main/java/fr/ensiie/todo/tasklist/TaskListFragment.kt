@@ -9,9 +9,13 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import coil.load
+import fr.ensiie.todo.R
 import fr.ensiie.todo.data.Api
+import fr.ensiie.todo.data.User
 import fr.ensiie.todo.databinding.FragmentTaskListBinding
 import fr.ensiie.todo.detail.DetailActivity
+import fr.ensiie.todo.user.UserActivity
 import kotlinx.coroutines.launch
 
 class TaskListFragment : Fragment() {
@@ -73,10 +77,6 @@ class TaskListFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            fetchUser()
-        }
-
-        lifecycleScope.launch {
             viewModel.tasksStateFlow.collect { newList ->
                 adapter.submitList(newList)
             }
@@ -86,12 +86,24 @@ class TaskListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        lifecycleScope.launch {
+            val user = fetchUser()
+            binding.userTextView.text = user.name
+            binding.avatar.load(user.avatar) {
+                error(R.drawable.ic_launcher_background)
+            }
+            binding.avatar.setOnClickListener {
+                val intent = Intent(context, UserActivity::class.java)
+                intent.putExtra("user", user)
+                createTask.launch(intent)
+            }
+        }
+
         viewModel.refresh()
     }
 
-    private suspend fun fetchUser() {
-        val user = Api.userWebService.fetchUser().body()!!
-        binding.userTextView.text = user.name
+    private suspend fun fetchUser() : User {
+        return Api.userWebService.fetchUser().body()!!
     }
 
 }
