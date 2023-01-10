@@ -15,6 +15,9 @@ interface TasksWebService {
     @POST("/rest/v2/tasks/")
     suspend fun create(@Body task: Task): Response<Task>
 
+    @POST("/rest/v2/tasks/{id}/close")
+    suspend fun close(@Path("id") id: String): Response<Unit>
+
     @POST("/rest/v2/tasks/{id}")
     suspend fun update(@Body task: Task, @Path("id") id: String = task.id): Response<Task>
 

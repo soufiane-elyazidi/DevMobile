@@ -19,4 +19,8 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="avatar">avatar</string>
     <string name="title_activity_user">UserActivity</string>
+    <string name="done">Done</string>
+    <string name="show_done_tasks">Show done tasks</string>
+    <string name="pending_tasks">Pending tasks</string>
+    <string name="add_task_btn">Add Task</string>
 </resources>

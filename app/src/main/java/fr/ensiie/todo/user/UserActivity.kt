@@ -11,14 +11,18 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import fr.ensiie.todo.data.Api
 import fr.ensiie.todo.data.User
@@ -73,8 +77,12 @@ class UserActivity : ComponentActivity() {
                 }
             }
 
-            Column {
-                Text(text = "User Detail", style = MaterialTheme.typography.h2)
+            Column(
+                modifier = Modifier.padding(all = Dp(16F)),
+                verticalArrangement = Arrangement.spacedBy(Dp(16F)),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "User Details", style = MaterialTheme.typography.h3)
                 AsyncImage(
                     modifier = Modifier.fillMaxHeight(.2f),
                     model = /*bitmap ?: */uri ?: user.avatar,
@@ -94,9 +102,11 @@ class UserActivity : ComponentActivity() {
                 )
                 Button(
                     onClick = {
-                        pickMedia.launch(PickVisualMediaRequest(
-                            ActivityResultContracts.PickVisualMedia.ImageOnly
-                        ))
+                        pickMedia.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
+                        )
                     },
                     content = { Text("Pick photo") }
                 )

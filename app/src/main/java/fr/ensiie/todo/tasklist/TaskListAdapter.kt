@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -45,6 +46,7 @@ class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskLi
             itemView.findViewById<TextView>(R.id.task_description).text = task.description
             itemView.findViewById<ImageButton>(R.id.delete_task).setOnClickListener { listener.onClickDelete(task) }
             itemView.findViewById<ImageButton>(R.id.edit_task).setOnClickListener { listener.onClickEdit(task) }
+            itemView.findViewById<RadioButton>(R.id.check_task).setOnClickListener { listener.onClickClose(task) }
         }
 
     }

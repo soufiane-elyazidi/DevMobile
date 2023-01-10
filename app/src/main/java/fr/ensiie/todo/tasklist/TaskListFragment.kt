@@ -25,12 +25,18 @@ class TaskListFragment : Fragment() {
 
         override fun onClickDelete(task: Task) {
             viewModel.delete(task)
+            viewModel.refresh()
         }
 
         override fun onClickEdit(task: Task) {
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra("task", task)
             editTask.launch(intent)
+        }
+
+        override fun onClickClose(task: Task) {
+            viewModel.close(task)
+            viewModel.refresh()
         }
 
         override fun onLongClick(task: Task) {
@@ -61,6 +67,8 @@ class TaskListFragment : Fragment() {
 
     private val viewModel: TasksListViewModel by viewModels()
 
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTaskListBinding.inflate(inflater, container, false)
         return binding.root
@@ -88,14 +96,19 @@ class TaskListFragment : Fragment() {
 
         lifecycleScope.launch {
             val user = fetchUser()
+
             binding.userTextView.text = user.name
+
             binding.avatar.load(user.avatar) {
                 error(R.drawable.ic_launcher_background)
             }
+
+            activity?.actionBar?.setIcon(binding.avatar.drawable)
+
             binding.avatar.setOnClickListener {
                 val intent = Intent(context, UserActivity::class.java)
                 intent.putExtra("user", user)
-                createTask.launch(intent)
+                createTask.launch(intent)   
             }
         }
 

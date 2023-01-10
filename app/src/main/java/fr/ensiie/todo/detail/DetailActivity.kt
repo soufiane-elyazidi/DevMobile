@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -25,8 +26,8 @@ class DetailActivity : ComponentActivity() {
 
         var task = intent.getSerializableExtra("task") as Task?
         if (task == null) task = Task(id = UUID.randomUUID().toString(),
-            title = "Task Title",
-            description = "Task Description")
+            title = "",
+            description = "")
 
         when (intent?.action) {
             Intent.ACTION_SEND -> {
@@ -61,18 +62,27 @@ fun Detail(task: Task, onValidate: (Task) -> Unit) {
     var newTask by remember { mutableStateOf(task) }
     Column(
         modifier = Modifier.padding(all = Dp(16F)),
-        verticalArrangement = Arrangement.spacedBy(Dp(16F))
+        verticalArrangement = Arrangement.spacedBy(Dp(16F)),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "Task Detail", style = MaterialTheme.typography.h2)
-        OutlinedTextField(value = newTask.title, onValueChange = {
-            newTask = newTask.copy(title = it)
-        })
-        OutlinedTextField(value = newTask.description, onValueChange = {
-            newTask = newTask.copy(description = it)
-        })
-        Button(onClick = {
-            onValidate(newTask)
-        }, ) {
+        Text(text = "Task Details", style = MaterialTheme.typography.h3)
+        OutlinedTextField(
+            value = newTask.title,
+            placeholder = { Text("Task Title") },
+            onValueChange = {
+                newTask = newTask.copy(title = it)
+            }
+        )
+        OutlinedTextField(
+            value = newTask.description,
+            placeholder = { Text("Task Description") },
+            onValueChange = {
+                newTask = newTask.copy(description = it)
+            }
+        )
+        Button(
+            onClick = { onValidate(newTask) }
+        ) {
             Text(text = "Validate")
         }
     }

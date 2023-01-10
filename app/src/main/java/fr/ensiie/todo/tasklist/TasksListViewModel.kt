@@ -59,4 +59,14 @@ class TasksListViewModel : ViewModel() {
             }
         }
     }
+
+    fun close(task: Task) {
+        viewModelScope.launch {
+            val response = webService.close(task.id)
+            if (!response.isSuccessful) {
+                Log.e("Network", "Error: ${response.raw()}")
+                return@launch
+            }
+        }
+    }
 }
