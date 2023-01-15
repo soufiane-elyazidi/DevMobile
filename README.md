@@ -1,11 +1,11 @@
 # DevMobile
 
-This is a basic app that manages tasks
+This is a basic app that manages tasks.
 
-+ Users can add, edit and delete tasks
++ Users can add, edit and delete tasks.
 
-+ Added user registration, once user is registered the token is stored in cache
++ Added user registration, once user is registered the token is stored in cache.
 
-+ Added the possibility to see done tasks and reopen them if needed
++ Added the possibility to see done tasks and reopen them if needed. Done tasks are stored in a local db.
 
-+ We also added image compression because pictures are usually heavy if they surpass a certain size and they can't be uploaded to the server
++ We also added image compression because pictures are usually heavy if they surpass a certain size and they can't be uploaded to the server.
