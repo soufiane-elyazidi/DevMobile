@@ -2,7 +2,7 @@
 
 This is a basic app that manages tasks
 
-Users can add, edit and delete tasks
++ Users can add, edit and delete tasks
 
 + Added user registration, once user is registered the token is stored in cache
 
