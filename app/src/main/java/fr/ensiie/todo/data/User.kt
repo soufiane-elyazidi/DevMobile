@@ -9,5 +9,8 @@ data class User(
     @SerialName("full_name")
     val name: String,
     @SerialName("avatar_medium")
-    val avatar: String? = null
+    val avatar: String? = null,
+    val password: String? = null,
+    @SerialName("token")
+    val token: String? = null,
 ) : java.io.Serializable

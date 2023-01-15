@@ -8,7 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 object Api {
-    private const val TOKEN = "68d55365441f493002c73d68d47012ffd5aed5fa"
+    var TOKEN: String? = null//"68d55365441f493002c73d68d47012ffd5aed5fa"
 
     private val retrofit by lazy {
         val okHttpClient = OkHttpClient.Builder()

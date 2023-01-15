@@ -35,6 +35,15 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_user"
+            android:theme="@style/Theme.TodoSoufiane">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".detail.DetailActivity"
             android:exported="true"
             android:label="@string/title_activity_detail"

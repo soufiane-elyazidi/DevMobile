@@ -19,4 +19,7 @@ interface UserWebService {
 
     @PATCH("sync/v9/users")
     suspend fun update(@Body user: User): Response<User>
+
+    @POST("sync/v9/user/register")
+    suspend fun register(@Body user: User): Response<User>
 }
