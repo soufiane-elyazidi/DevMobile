@@ -1,6 +1,6 @@
 package fr.ensiie.todo.data
 
-import fr.ensiie.todo.tasklist.Task
+import fr.ensiie.todo.dao.Task
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -17,6 +17,9 @@ interface TasksWebService {
 
     @POST("/rest/v2/tasks/{id}/close")
     suspend fun close(@Path("id") id: String): Response<Unit>
+
+    @POST("/rest/v2/tasks/{id}/reopen")
+    suspend fun reopen(@Path("id") id: String): Response<Unit>
 
     @POST("/rest/v2/tasks/{id}")
     suspend fun update(@Body task: Task, @Path("id") id: String = task.id): Response<Task>

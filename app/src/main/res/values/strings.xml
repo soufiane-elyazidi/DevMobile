@@ -23,4 +23,5 @@
     <string name="show_done_tasks">Show done tasks</string>
     <string name="pending_tasks">Pending tasks</string>
     <string name="add_task_btn">Add Task</string>
+    <string name="done_tasks">Done tasks</string>
 </resources>

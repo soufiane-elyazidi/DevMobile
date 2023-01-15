@@ -11,12 +11,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import coil.load
 import fr.ensiie.todo.R
+import fr.ensiie.todo.dao.Database
+import fr.ensiie.todo.dao.Task
 import fr.ensiie.todo.data.Api
 import fr.ensiie.todo.data.User
 import fr.ensiie.todo.databinding.FragmentTaskListBinding
 import fr.ensiie.todo.detail.DetailActivity
+import fr.ensiie.todo.tasklistclosed.ClosedTasks
 import fr.ensiie.todo.user.UserActivity
 import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class TaskListFragment : Fragment() {
     private lateinit var binding: FragmentTaskListBinding
@@ -36,6 +41,7 @@ class TaskListFragment : Fragment() {
 
         override fun onClickClose(task: Task) {
             viewModel.close(task)
+            Database.taskDao().insert(task)
             viewModel.refresh()
         }
 
@@ -67,8 +73,6 @@ class TaskListFragment : Fragment() {
 
     private val viewModel: TasksListViewModel by viewModels()
 
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentTaskListBinding.inflate(inflater, container, false)
         return binding.root
@@ -84,11 +88,22 @@ class TaskListFragment : Fragment() {
             createTask.launch(intent)
         }
 
+        binding.doneTasks.setOnClickListener {
+            val intent = Intent(context, ClosedTasks::class.java)
+            createTask.launch(intent)
+        }
+
         lifecycleScope.launch {
             viewModel.tasksStateFlow.collect { newList ->
                 adapter.submitList(newList)
             }
         }
+
+        val executor = Executors.newScheduledThreadPool(1)
+        executor.scheduleAtFixedRate({
+            onResume()
+        }, 0, 2, TimeUnit.SECONDS)
+
     }
 
     override fun onResume() {

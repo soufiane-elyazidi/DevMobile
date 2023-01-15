@@ -3,6 +3,7 @@ package fr.ensiie.todo.user
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -26,10 +27,10 @@ import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import fr.ensiie.todo.data.Api
 import fr.ensiie.todo.data.User
-import fr.ensiie.todo.tasklist.Task
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
 
@@ -125,8 +126,8 @@ class UserActivity : ComponentActivity() {
 
     private fun Bitmap.toRequestBody(): MultipartBody.Part {
         val tmpFile = File.createTempFile("avatar", "jpg")
-        tmpFile.outputStream().use { // *use* se charge de faire open et close
-            this.compress(Bitmap.CompressFormat.JPEG, 100, it) // *this* est le bitmap ici
+        tmpFile.outputStream().use {
+            this.compress(Bitmap.CompressFormat.JPEG, 100, it)
         }
         return MultipartBody.Part.createFormData(
             name = "avatar",
@@ -138,13 +139,44 @@ class UserActivity : ComponentActivity() {
     @SuppressLint("Recycle")
     private fun Uri.toRequestBody(): MultipartBody.Part {
         val fileInputStream = contentResolver.openInputStream(this)!!
-        val fileBody = fileInputStream.readBytes().toRequestBody()
+        val fileBody = compressImage(fileInputStream.readBytes()).toRequestBody()
         return MultipartBody.Part.createFormData(
             name = "avatar",
             filename = "avatar.jpg",
             body = fileBody
         )
     }
+
+    private fun compressImage(imageByteArray: ByteArray): ByteArray {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size, options)
+        options.inSampleSize = calculateInSampleSize(options, 1080, 1080)
+        options.inJustDecodeBounds = false
+        val bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size, options)
+
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+        return outputStream.toByteArray()
+    }
+
+    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        val (height: Int, width: Int) = options.run { outHeight to outWidth }
+        var inSampleSize = 1
+
+        if (height > reqHeight || width > reqWidth) {
+
+            val halfHeight: Int = height / 2
+            val halfWidth: Int = width / 2
+
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+
+        return inSampleSize
+    }
+
 }
 
 

@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import fr.ensiie.todo.detail.ui.theme.MyTheme
-import fr.ensiie.todo.tasklist.Task
+import fr.ensiie.todo.dao.Task
 import java.util.UUID
 
 class DetailActivity : ComponentActivity() {
@@ -65,7 +65,7 @@ fun Detail(task: Task, onValidate: (Task) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(Dp(16F)),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "Task Details", style = MaterialTheme.typography.h3)
+        Text(text = "New Task", style = MaterialTheme.typography.h4)
         OutlinedTextField(
             value = newTask.title,
             placeholder = { Text("Task Title") },

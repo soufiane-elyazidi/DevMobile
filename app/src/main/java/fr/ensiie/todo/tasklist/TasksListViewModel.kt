@@ -3,6 +3,7 @@ package fr.ensiie.todo.tasklist
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fr.ensiie.todo.dao.Task
 import fr.ensiie.todo.data.Api
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -63,6 +64,16 @@ class TasksListViewModel : ViewModel() {
     fun close(task: Task) {
         viewModelScope.launch {
             val response = webService.close(task.id)
+            if (!response.isSuccessful) {
+                Log.e("Network", "Error: ${response.raw()}")
+                return@launch
+            }
+        }
+    }
+
+    fun reopen(task: Task) {
+        viewModelScope.launch {
+            val response = webService.reopen(task.id)
             if (!response.isSuccessful) {
                 Log.e("Network", "Error: ${response.raw()}")
                 return@launch

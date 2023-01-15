@@ -1,11 +1,14 @@
-package fr.ensiie.todo.tasklist
+package fr.ensiie.todo.dao
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 
 @kotlinx.serialization.Serializable
+@Entity(tableName = "tasks")
 data class Task (
     @SerialName("id")
-    val id: String,
+    @PrimaryKey val id: String,
     @SerialName("content")
     val title: String,
     @SerialName("description")

@@ -1,4 +1,4 @@
-package fr.ensiie.todo.tasklist
+package fr.ensiie.todo.tasklistclosed
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.ensiie.todo.R
 import fr.ensiie.todo.dao.Task
 
-class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>
+class ClosedTasksAdapter(val listener: ClosedTaskListListener) : ListAdapter<Task, ClosedTasksAdapter.TaskViewHolder>
     (ItemsDiffCallback) {
 
     object ItemsDiffCallback : DiffUtil.ItemCallback<Task>() {
@@ -29,7 +29,7 @@ class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskLi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         return TaskViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.closed_item_task, parent, false)
         )
     }
 
@@ -47,9 +47,7 @@ class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskLi
             itemView.findViewById<TextView>(R.id.task_title).text = task.title
             itemView.findViewById<TextView>(R.id.task_description).text = task.description
             itemView.findViewById<ImageButton>(R.id.delete_task).setOnClickListener { listener.onClickDelete(task) }
-            itemView.findViewById<ImageButton>(R.id.edit_task).setOnClickListener { listener.onClickEdit(task) }
-            itemView.findViewById<RadioButton>(R.id.check_task).setOnClickListener { listener.onClickClose(task) }
-            itemView.findViewById<RadioButton>(R.id.check_task).isChecked = false;
+            itemView.findViewById<RadioButton>(R.id.check_task).setOnClickListener { listener.onClickOpen(task) }
         }
 
     }
